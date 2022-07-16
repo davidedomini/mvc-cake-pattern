@@ -16,7 +16,7 @@ object ControllerModule:
   trait Provider:
     val controller: Controller
 
-  type Requirements = ViewModule.Provider with ModelModule.Provider with SimulationEngineModule.Provider
+  type Requirements = ModelModule.Provider with SimulationEngineModule.Provider
 
   trait Component:
     context: Requirements =>
