@@ -33,7 +33,7 @@ object SimulationEngineModule:
         val vt = context.model.getVirtualTime()
         context.view.show(vt)
 
-      implicit def unitToIO(exp: => Unit): Task[Unit] = Task { exp }
+      implicit def unitToTask(exp: => Unit): Task[Unit] = Task { exp }
 
   trait Interface extends Provider with Component:
     self: Requirements =>
