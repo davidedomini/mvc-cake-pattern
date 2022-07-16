@@ -16,7 +16,7 @@ object ViewModule:
     context: Requirements =>
     class ViewImpl extends View:
 
-      val gui = Gui(200, 400)
+      val gui = Gui(400, 200)
 
       def show(i: Int): Unit = gui render i
 

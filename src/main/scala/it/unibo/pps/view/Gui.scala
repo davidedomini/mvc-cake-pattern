@@ -1,7 +1,7 @@
 package it.unibo.pps.view
 
-import javax.swing.{JFrame, JPanel, JButton, SwingUtilities}
-import java.awt.{Canvas, Color, Dimension, Graphics, BorderLayout}
+import javax.swing.{JButton, JFrame, JLabel, JPanel, SwingUtilities}
+import java.awt.{BorderLayout, Canvas, Color, Dimension, Graphics}
 import java.awt.event.{ActionEvent, ActionListener}
 
 class Gui(val width: Int, val height: Int):
@@ -11,7 +11,7 @@ class Gui(val width: Int, val height: Int):
   val btnPanel = JPanel()
   val layout = BorderLayout()
   val startButton = new JButton("Start")
-  frame.setSize(width, height)
+  frame.setSize(width+200, height+100)
   frame.setLocationRelativeTo(null)
   canvas.setSize(width, height)
   btnPanel.add(startButton)
@@ -19,11 +19,11 @@ class Gui(val width: Int, val height: Int):
     override def actionPerformed(e: ActionEvent): Unit =
       println("start pressed")
   })
+  frame.setLayout(layout)
   frame.add(canvas, BorderLayout.NORTH)
   frame.add(btnPanel, BorderLayout.SOUTH)
-  frame.setLayout(layout)
-  frame.setVisible(true)
   canvas.setVisible(true)
+  frame.setVisible(true)
 
   def render(i: Int): Unit = SwingUtilities.invokeLater{ () =>
     canvas.element = i
