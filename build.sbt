@@ -6,5 +6,6 @@ scalaVersion := "3.1.3"
 
 
 //Add Cats dependencies
-libraryDependencies += "org.typelevel" %% "cats-core" % "2.8.0"
-libraryDependencies += "org.typelevel" %% "cats-effect" % "3.3.12"
+//libraryDependencies += "org.typelevel" %% "cats-core" % "2.8.0"
+//libraryDependencies += "org.typelevel" %% "cats-effect" % "3.3.12"
+libraryDependencies +=  "io.monix" %% "monix" % "3.4.1"

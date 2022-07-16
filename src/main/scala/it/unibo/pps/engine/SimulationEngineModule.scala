@@ -2,11 +2,14 @@ package it.unibo.pps.engine
 
 import it.unibo.pps.view.ViewModule
 import it.unibo.pps.model.ModelModule
-import cats.effect.IO
+import monix.eval.{Task, TaskApp}
+import monix.execution.Scheduler
+
+
 
 object SimulationEngineModule:
   trait SimulationEngine:
-    def simulationLoop(): IO[Unit]
+    def simulationLoop(): Task[Unit]
 
   trait Provider:
     val simulationEngine: SimulationEngine
@@ -17,7 +20,20 @@ object SimulationEngineModule:
     context: Requirements =>
     class SimulationEngineImpl extends SimulationEngine:
 
-      def simulationLoop(): IO[Unit] = ???
+      def simulationLoop(): Task[Unit] =
+        for
+          _ <- updateModel()
+          _ <- updateView()
+        yield()
+
+      private def updateModel(): Task[Unit] =
+        context.model.updateVirtualTime()
+
+      private def updateView(): Task[Unit] =
+        val vt = context.model.getVirtualTime()
+        context.view.show(vt)
+
+      implicit def unitToIO(exp: => Unit): Task[Unit] = Task { exp }
 
   trait Interface extends Provider with Component:
     self: Requirements =>

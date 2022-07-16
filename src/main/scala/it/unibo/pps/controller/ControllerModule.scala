@@ -4,6 +4,10 @@ import it.unibo.pps.view.ViewModule
 import it.unibo.pps.model.ModelModule
 import it.unibo.pps.engine.SimulationEngineModule
 
+import concurrent.duration.{Duration, DurationInt}
+import scala.language.postfixOps
+import monix.execution.Scheduler.Implicits.global
+
 object ControllerModule:
 
   trait Controller:
@@ -19,12 +23,11 @@ object ControllerModule:
     class ControllerImpl extends Controller:
       def notifyStart(): Unit =
         context.model.init()
-        new Thread(() => {
-          while true do
-            context.model.updateVirtualTime()
-            context.view.show(context.model.getVirtualTime())
-            Thread.sleep(1000)
-        }).start()
+        context.simulationEngine
+          .simulationLoop()
+          .delayResult(1 seconds)
+          .loopForever
+          .runAsyncAndForget
 
   trait Interface extends Provider with Component:
     self: Requirements =>
