@@ -3,8 +3,9 @@ package it.unibo.pps.view
 import javax.swing.{JButton, JFrame, JLabel, JPanel, SwingUtilities}
 import java.awt.{BorderLayout, Canvas, Color, Dimension, Graphics}
 import java.awt.event.{ActionEvent, ActionListener}
+import it.unibo.pps.controller.ControllerModule
 
-class Gui(val width: Int, val height: Int):
+class Gui(val width: Int, val height: Int, controller: ControllerModule.Controller):
   self =>
   private val frame = JFrame()
   private val canvas = Environment()
@@ -17,7 +18,7 @@ class Gui(val width: Int, val height: Int):
   btnPanel.add(startButton)
   startButton.addActionListener(new ActionListener {
     override def actionPerformed(e: ActionEvent): Unit =
-      println("start pressed")
+      controller.notifyStart()
   })
   frame.setLayout(layout)
   frame.add(canvas, BorderLayout.NORTH)
