@@ -12,3 +12,12 @@ object ControllerModule :
     val controller: Controller
 
   type Requirements = ViewModule.Provider with ModelModule.Provider
+  
+  trait Component:
+    context: Requirements =>
+    
+    class ControllerImpl extends Controller:
+      def notifyStart(): Unit = println("Controller started")
+      
+  trait Interface extends Provider with Component:
+    self: Requirements =>
