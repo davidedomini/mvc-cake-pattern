@@ -1,5 +1,7 @@
 package it.unibo.pps.view
 
+import it.unibo.pps.controller.ControllerModule
+
 object ViewModule:
 
   trait View:
@@ -8,7 +10,7 @@ object ViewModule:
   trait Provider:
     val view: View
 
-  type Requirements = ???
+  type Requirements = ControllerModule.Provider
 
   trait Component:
     context: Requirements =>
