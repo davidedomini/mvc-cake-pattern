@@ -1,6 +1,7 @@
 package it.unibo.pps.model
 
 object ModelModule:
+
   trait Model:
     def init(): Unit
     def updateVirtualTime(): Unit
