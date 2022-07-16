@@ -22,7 +22,6 @@ class Gui(val width: Int, val height: Int):
   frame.add(canvas, BorderLayout.NORTH)
   frame.add(btnPanel, BorderLayout.SOUTH)
   frame.setLayout(layout)
-  frame.add(canvas)
   frame.setVisible(true)
   canvas.setVisible(true)
 
