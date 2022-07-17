@@ -3,9 +3,6 @@ package it.unibo.pps.controller
 import it.unibo.pps.view.ViewModule
 import it.unibo.pps.model.ModelModule
 import it.unibo.pps.engine.SimulationEngineModule
-
-import concurrent.duration.{Duration, DurationInt}
-import scala.language.postfixOps
 import monix.execution.Scheduler.Implicits.global
 
 object ControllerModule:
@@ -25,7 +22,6 @@ object ControllerModule:
         context.model.init()
         context.simulationEngine
           .simulationLoop()
-          .delayResult(1 seconds)
           .loopForever
           .runAsyncAndForget
 
