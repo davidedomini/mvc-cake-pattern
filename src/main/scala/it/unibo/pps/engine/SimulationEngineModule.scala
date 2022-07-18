@@ -34,15 +34,13 @@ object SimulationEngineModule:
 
       private def computeNewVt(): Task[Int] = context.model.getVirtualTime() + 1
 
-      private def updateModel(t: Int): Task[Unit] =
-        context.model.updateVirtualTime(t)
+      private def updateModel(t: Int): Task[Unit] = context.model.updateVirtualTime(t)
 
       private def updateView(): Task[Unit] =
         val vt = context.model.getVirtualTime()
         context.view.show(vt)
 
-      private def waitFor(d: FiniteDuration): Task[Unit] =
-        Task.sleep(d)
+      private def waitFor(d: FiniteDuration): Task[Unit] = Task.sleep(d)
 
   trait Interface extends Provider with Component:
     self: Requirements =>
