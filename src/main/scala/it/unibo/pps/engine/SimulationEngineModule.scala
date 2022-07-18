@@ -6,6 +6,7 @@ import monix.eval.{Task, TaskApp}
 import monix.execution.Scheduler
 import concurrent.duration.{Duration, DurationInt, FiniteDuration}
 import scala.language.postfixOps
+import scala.language.implicitConversions
 
 object SimulationEngineModule:
   trait SimulationEngine:
@@ -19,6 +20,8 @@ object SimulationEngineModule:
   trait Component:
     context: Requirements =>
     class SimulationEngineImpl extends SimulationEngine:
+
+      given Conversion[Unit, Task[Unit]] = Task(_)
 
       def simulationLoop(): Task[Unit] =
         for
@@ -36,8 +39,6 @@ object SimulationEngineModule:
 
       private def waitFor(d: FiniteDuration): Task[Unit] =
         Task.sleep(d)
-
-      implicit def unitToTask(exp: => Unit): Task[Unit] = Task { exp }
 
   trait Interface extends Provider with Component:
     self: Requirements =>
