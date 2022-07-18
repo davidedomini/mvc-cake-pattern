@@ -22,16 +22,22 @@ object SimulationEngineModule:
     class SimulationEngineImpl extends SimulationEngine:
 
       given unitToTask: Conversion[Unit, Task[Unit]] = Task(_)
+      given intToTask: Conversion[Int, Task[Int]] = Task(_)
 
       def simulationLoop(): Task[Unit] =
         for
           _ <- waitFor(1 seconds)
-          _ <- updateModel()
+          vt <- computeNewVt()
+          _ <- updateModel(vt)
           _ <- updateView()
         yield()
 
-      private def updateModel(): Task[Unit] =
-        context.model.updateVirtualTime()
+      private def computeNewVt(): Task[Int] =
+        val vt = context.model.getVirtualTime()
+        vt + 1
+
+      private def updateModel(t: Int): Task[Unit] =
+        context.model.updateVirtualTime(t)
 
       private def updateView(): Task[Unit] =
         val vt = context.model.getVirtualTime()
