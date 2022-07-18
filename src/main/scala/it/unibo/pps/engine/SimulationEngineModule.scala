@@ -32,9 +32,7 @@ object SimulationEngineModule:
           _ <- updateView()
         yield()
 
-      private def computeNewVt(): Task[Int] =
-        val vt = context.model.getVirtualTime()
-        vt + 1
+      private def computeNewVt(): Task[Int] = context.model.getVirtualTime() + 1
 
       private def updateModel(t: Int): Task[Unit] =
         context.model.updateVirtualTime(t)
