@@ -21,7 +21,7 @@ object SimulationEngineModule:
     context: Requirements =>
     class SimulationEngineImpl extends SimulationEngine:
 
-      given Conversion[Unit, Task[Unit]] = Task(_)
+      given unitToTask: Conversion[Unit, Task[Unit]] = Task(_)
 
       def simulationLoop(): Task[Unit] =
         for
