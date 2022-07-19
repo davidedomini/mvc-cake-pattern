@@ -9,17 +9,14 @@ class Gui(val width: Int, val height: Int, controller: ControllerModule.Controll
   self =>
   private val frame = JFrame()
   private val canvas = Environment()
-  val btnPanel = JPanel() // why btnPanel & layer are public?
-  val layout = BorderLayout()
-  val startButton = new JButton("Start")
+  private val btnPanel = JPanel() 
+  private val layout = BorderLayout()
+  private val startButton = new JButton("Start")
   frame.setSize(width+200, height+100)
   frame.setLocationRelativeTo(null)
   canvas.setSize(width, height)
   btnPanel.add(startButton)
-  startButton.addActionListener(new ActionListener { // it is better to use (e: ActionEvent) => ...
-    override def actionPerformed(e: ActionEvent): Unit =
-      controller.notifyStart()
-  })
+  startButton.addActionListener((e:ActionEvent) => controller.notifyStart())
   frame.setLayout(layout)
   frame.add(canvas, BorderLayout.NORTH)
   frame.add(btnPanel, BorderLayout.SOUTH)

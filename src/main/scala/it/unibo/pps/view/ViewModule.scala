@@ -5,7 +5,7 @@ import it.unibo.pps.controller.ControllerModule
 object ViewModule:
 
   trait View:
-    def show(i: Int): Unit
+    def show(vitualTime: Int): Unit
 
   trait Provider:
     val view: View
@@ -15,8 +15,8 @@ object ViewModule:
   trait Component:
     context: Requirements =>
     class ViewImpl extends View:
-      val gui = Gui(400, 200, context.controller) // it should be private
-      def show(i: Int): Unit = gui render i // when it is possible, use "good" names, i it is not self-explainable
+      private val gui = Gui(400, 200, context.controller)
+      def show(virtualTime: Int): Unit = gui render virtualTime
 
   trait Interface extends Provider with Component:
     self: Requirements =>
