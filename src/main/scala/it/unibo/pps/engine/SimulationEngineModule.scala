@@ -10,7 +10,7 @@ import scala.language.implicitConversions
 
 object SimulationEngineModule:
   trait SimulationEngine:
-    def simulationLoop(): Task[Unit]
+    def simulationStep(): Task[Unit]
 
   trait Provider:
     val simulationEngine: SimulationEngine
@@ -24,7 +24,7 @@ object SimulationEngineModule:
       given unitToTask: Conversion[Unit, Task[Unit]] = Task(_)
       given intToTask: Conversion[Int, Task[Int]] = Task(_)
 
-      def simulationLoop(): Task[Unit] =
+      def simulationStep(): Task[Unit] = // this is the step of a simulation, not the entire loop
         for
           _ <- waitFor(1 seconds)
           vt <- computeNewVt()
