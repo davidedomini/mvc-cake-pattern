@@ -21,7 +21,7 @@ object ControllerModule:
       def notifyStart(): Unit =
         context.model.init()
         context.simulationEngine
-          .simulationLoop()
+          .simulationStep()
           .loopForever
           .runAsyncAndForget
 

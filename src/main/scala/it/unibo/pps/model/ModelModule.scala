@@ -13,8 +13,7 @@ object ModelModule:
   trait Component:
     class ModelImpl extends Model:
 
-      var virtualTime: Int = 0
-
+      private var virtualTime: Int = 0 // inner state should be private
       def init(): Unit = virtualTime = 0
       def updateVirtualTime(t: Int): Unit = virtualTime = t
       def getVirtualTime(): Int = virtualTime
