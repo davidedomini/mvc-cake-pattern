@@ -39,7 +39,6 @@ class MonadicGui(val width: Int, val height: Int, controller: ControllerModule.C
     _ <- fr.add(jb, BorderLayout.SOUTH)
     _ <- fr.setVisible(true)
   yield ()
-  println(canvas)
   p.runAsyncAndForget
 
   def render(i: Int): Unit =
