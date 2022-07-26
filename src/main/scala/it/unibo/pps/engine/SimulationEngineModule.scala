@@ -30,7 +30,7 @@ object SimulationEngineModule:
           vt <- computeNewVt()
           _ <- updateModel(vt)
           _ <- updateView()
-        yield()
+        yield ()
 
       private def computeNewVt(): Task[Int] = context.model.getVirtualTime() + 1
 
