@@ -41,12 +41,13 @@ class MonadicGui(val width: Int, val height: Int, controller: ControllerModule.C
   yield ()
   p.runAsyncAndForget
 
-  def render(i: Int): Unit =
+  def render(i: Int): Unit = SwingUtilities.invokeLater{ () =>
     canvas.foreach(c => {
       c.element = i
       c.invalidate()
       c.repaint()
     })
+  }
 
 class Environment(val w: Int, val h: Int) extends JPanel:
   var element = 0
