@@ -5,33 +5,53 @@ import java.awt.event.{ActionEvent, ActionListener}
 import it.unibo.pps.controller.ControllerModule
 import monix.eval.{Task, TaskApp}
 import javax.swing.WindowConstants
+import monix.execution.Scheduler.Implicits.global
 
+class MonadicGui(val width: Int, val height: Int, controller: ControllerModule.Controller):
 
-given componentToTask: Conversion[Component, Task[Component]] = Task(_)
-given unitToTask: Conversion[Unit, Task[Unit]] = Task(_)
-given jfrToTask: Conversion[JFrame, Task[JFrame]] = Task(_)
-given jbToTask: Conversion[JButton, Task[JButton]] = Task(_)
+  import GivenConversion.GuiConversion.given
 
-class MonadicGui:
-
-  def initGui(): Task[Unit] =
-    val frame: Task[JFrame] = for
-      fr <- createJFr()
-      _ <- fr.setSize(400, 200)
+  val frame: Task[JFrame] =
+    for
+      fr <- new JFrame("Chrono")
+      _ <- fr.setSize(width, height)
       _ <- fr.setLocationRelativeTo(null)
       _ <- fr.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
     yield fr
-    val btn = for
-      jb <- new JButton()
-      _ <- jb.setSize(100, 50)
-      _ <- jb.setText("ciao")
-      _ <- jb.addActionListener(e => println("ciao"))
-    yield jb
+  val btn =
     for
-      fr <- frame
-      jb <- btn
-      _ <- fr.add(jb)
-      _ <- fr.setVisible(true)
-    yield ()
+      jb <- new JButton()
+      _ <- jb.setText("Start")
+      _ <- jb.addActionListener(e => controller.notifyStart())
+    yield jb
+  val canvas: Task[Environment] =
+    for
+      cnv <- new Environment(width - 200, height - 100)
+      _ <- cnv.setSize(width - 200, height - 100)
+      _ <- cnv.setVisible(true)
+    yield cnv
+  val p = for
+    fr <- frame
+    jb <- btn
+    cnv <- canvas
+    _ <- fr.setLayout(new BorderLayout())
+    _ <- fr.add(cnv, BorderLayout.NORTH)
+    _ <- fr.add(jb, BorderLayout.SOUTH)
+    _ <- fr.setVisible(true)
+  yield ()
+  println(canvas)
+  p.runAsyncAndForget
 
-  def createJFr(): Task[JFrame] = new JFrame("Chrono")
+  def render(i: Int): Unit =
+    canvas.foreach(c => {
+      c.element = i
+      c.invalidate()
+      c.repaint()
+    })
+
+class Environment(val w: Int, val h: Int) extends JPanel:
+  var element = 0
+  override def getPreferredSize = new Dimension(w, h)
+  override def paintComponent(graphics: Graphics): Unit =
+    graphics.setColor(Color.BLACK)
+    graphics.drawString(element.toString, 50, 50)
