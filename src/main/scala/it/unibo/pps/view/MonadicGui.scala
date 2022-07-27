@@ -1,4 +1,5 @@
 package it.unibo.pps.view
+
 import javax.swing.{JButton, JFrame, JLabel, JPanel, SwingUtilities}
 import java.awt.{Component, BorderLayout, Canvas, Color, Dimension, Graphics}
 import java.awt.event.{ActionEvent, ActionListener}
