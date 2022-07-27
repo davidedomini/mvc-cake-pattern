@@ -7,30 +7,14 @@ import it.unibo.pps.controller.ControllerModule
 import monix.eval.{Task, TaskApp}
 import javax.swing.WindowConstants
 import monix.execution.Scheduler.Implicits.global
+import GivenConversion.GuiConversion.given
 
 class MonadicGui(val width: Int, val height: Int, controller: ControllerModule.Controller):
 
-  import GivenConversion.GuiConversion.given
+  val frame = createFrame()
+  val btn = createButton()
+  val canvas = createCanvas()
 
-  val frame: Task[JFrame] =
-    for
-      fr <- new JFrame("Chrono")
-      _ <- fr.setSize(width, height)
-      _ <- fr.setLocationRelativeTo(null)
-      _ <- fr.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
-    yield fr
-  val btn =
-    for
-      jb <- new JButton()
-      _ <- jb.setText("Start")
-      _ <- jb.addActionListener(e => controller.notifyStart())
-    yield jb
-  val canvas: Task[Environment] =
-    for
-      cnv <- new Environment(width - 200, height - 100)
-      _ <- cnv.setSize(width - 200, height - 100)
-      _ <- cnv.setVisible(true)
-    yield cnv
   val p = for
     fr <- frame
     jb <- btn
@@ -42,13 +26,35 @@ class MonadicGui(val width: Int, val height: Int, controller: ControllerModule.C
   yield ()
   p.runAsyncAndForget
 
-  def render(i: Int): Unit = SwingUtilities.invokeLater{ () =>
-    canvas.foreach(c => {
+  def render(i: Int): Unit = SwingUtilities.invokeLater { () =>
+    canvas.foreach { c =>
       c.element = i
       c.invalidate()
       c.repaint()
-    })
+    }
   }
+
+  private def createFrame(): Task[JFrame] =
+    for
+      fr <- new JFrame("Chrono")
+      _ <- fr.setSize(width, height)
+      _ <- fr.setLocationRelativeTo(null)
+      _ <- fr.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
+    yield fr
+
+  private def createButton(): Task[JButton] =
+    for
+      jb <- new JButton()
+      _ <- jb.setText("Start")
+      _ <- jb.addActionListener(e => controller.notifyStart())
+    yield jb
+
+  private def createCanvas(): Task[Environment] =
+    for
+      cnv <- new Environment(width - 200, height - 100)
+      _ <- cnv.setSize(width - 200, height - 100)
+      _ <- cnv.setVisible(true)
+    yield cnv
 
 class Environment(val w: Int, val h: Int) extends JPanel:
   var element = 0
