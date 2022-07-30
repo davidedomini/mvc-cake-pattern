@@ -1,4 +1,5 @@
 package it.unibo.pps.model
+import monix.reactive.Observable
 
 object ModelModule:
 

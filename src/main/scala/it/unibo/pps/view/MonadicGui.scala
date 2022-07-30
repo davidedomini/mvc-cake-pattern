@@ -1,32 +1,41 @@
 package it.unibo.pps.view
 
 import javax.swing.{JButton, JFrame, JLabel, JPanel, SwingUtilities}
-import java.awt.{Component, BorderLayout, Canvas, Color, Dimension, Graphics}
+import java.awt.{BorderLayout, Canvas, Color, Component, Dimension, Graphics}
 import java.awt.event.{ActionEvent, ActionListener}
 import it.unibo.pps.controller.ControllerModule
 import monix.eval.{Task, TaskApp}
+import it.unibo.pps.view.charts.ChartManager
+
 import javax.swing.WindowConstants
 import monix.execution.Scheduler.Implicits.global
 import GivenConversion.GuiConversion.given
+import org.jfree.chart.ChartPanel
 
 class MonadicGui(val width: Int, val height: Int, controller: ControllerModule.Controller):
 
-  val frame = createFrame()
-  val btn = createButton()
-  val canvas = createCanvas()
+  private val frame = createFrame()
+  private val btn = createButton()
+  private val canvas = createCanvas()
+  private val chartManager = ChartManager()
+  private val chartPanel = createChart()
 
-  val p = for
+  private val p = for
     fr <- frame
     jb <- btn
     cnv <- canvas
+    ch <- chartPanel
     _ <- fr.setLayout(new BorderLayout())
     _ <- fr.add(cnv, BorderLayout.NORTH)
     _ <- fr.add(jb, BorderLayout.SOUTH)
+    _ <- fr.add(ch, BorderLayout.EAST)
     _ <- fr.setVisible(true)
   yield ()
   p.runAsyncAndForget
 
   def render(i: Int): Unit = SwingUtilities.invokeLater { () =>
+    chartManager.addValue(i, i * i)
+    chartPanel.foreach(c => c.repaint())
     canvas.foreach { c =>
       c.element = i
       c.invalidate()
@@ -51,10 +60,16 @@ class MonadicGui(val width: Int, val height: Int, controller: ControllerModule.C
 
   private def createCanvas(): Task[Environment] =
     for
-      cnv <- new Environment(width - 200, height - 100)
-      _ <- cnv.setSize(width - 200, height - 100)
+      cnv <- new Environment(width - 600, height - 400)
+      _ <- cnv.setSize(width - 600, height - 400)
       _ <- cnv.setVisible(true)
     yield cnv
+
+  private def createChart(): Task[ChartPanel] =
+    for
+      ch <- chartManager.emptyLineChart("Grafico di prova", "Virtual time", "Virtual time ^ 2", "Squared vt")
+      _ <- ch.setPreferredSize(Dimension(300, 200))
+    yield ch
 
 class Environment(val w: Int, val h: Int) extends JPanel:
   var element = 0
